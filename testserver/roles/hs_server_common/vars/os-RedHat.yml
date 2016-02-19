@@ -1,0 +1,12 @@
+---
+
+# operating System setup
+  
+  os_swappiness: 5
+  os_dirty_background_ratio: 5
+  os_dirty_ratio: 10 
+ 
+  os_disable_selinux: true
+  os_disable_iptables: true
+  
+ 

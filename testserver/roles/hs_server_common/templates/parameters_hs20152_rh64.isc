@@ -1,0 +1,91 @@
+
+dist.source_dir: {{ common_install_base_path }}/{{ hs_install_unpack_path }}
+legacy_dist.source_dir: {{ common_install_base_path }}/{{ hs_install_unpack_path }}
+product_info.version: 2015.2.0.664.0
+product_info.name: HealthShare
+product_info.displayed_name: HealthShare
+platform_selection.platform: lnxrhx64
+platform_selection.platform_family: lnxrhx64
+platform_selection.endianness: little
+platform_selection.os: Linux
+posix_tools.user_add: /usr/sbin/useradd
+posix_tools.group_add: /usr/sbin/groupadd
+posix_tools.grep: grep
+posix_tools.id: id
+posix_tools.ps_opt: -ef
+posix_tools.gzip: gzip
+posix_tools.shared_ext: so
+posix_tools.symbolic_copy: cp -Rfp
+posix_tools.tr: tr
+posix_tools.shared_ext1: so
+posix_tools.permission: 755
+posix_tools.dir_permission: 775
+server_location.target_dir: {{ ISC_PACKAGE_INSTALLDIR }}
+server_location.is_server_install: Y
+server_location.is_nonroot_install: N
+server_location.instance_name: H2015
+server_location.is_new_install: Y
+server_location.registry_dir: /usr/local/etc/cachesys
+server_location.convert_ensemble_registry:
+server_location.ccontrol: {{ common_install_base_path }}/{{ hs_install_unpack_path }}/dist/lnxrhx64/bin/shared/ccontrol
+install_mode.setup_type: Custom
+unicode_selection.binary_type: unicode
+unicode_selection.install_unicode: Y
+security_settings.cache_user: {{ hs_cache_usr }}
+security_settings.cache_group: {{ hs_cache_usr }}
+security_settings.manager_user: {{ hs_cache_usr_sys }}
+security_settings.manager_group: {{ hs_cachemgr_group }}
+security_settings.dbencrypted: 0
+security_settings.dbenckeyfile:
+security_settings.dbenckeyuser:
+security_settings.personal_database:
+security_settings.initial_level: Normal
+security_settings.already_secured: N
+security_settings.password: {{ ISC_PACKAGE_SMP_CSP_PASSWORD }}
+security_settings.csppassword: {{ ISC_PACKAGE_SMP_CSP_PASSWORD }}
+security_settings.dbenckeypassword: {{ ISC_PACKAGE_SMP_CSP_PASSWORD }}
+installer.manifest:
+installer.manifest_parameters: SourceDir={{ common_install_base_path }}/{{ hs_install_unpack_path }},ISCUpgrade=0,
+manager_source_code.available: Y
+port_selection.superserver_port: {{ ISC_PACKAGE_SUPERSERVER_PORT }}
+port_selection.webserver_port: {{ ISC_PACKAGE_WEBSERVER_PORT }}
+port_selection.jdbcgateway_port: {{ ISC_PACKAGE_JDBCGATEWAY_PORT }}
+csp_gateway.configure: Y
+csp_gateway.web_server_type: Apache
+csp_gateway.apache_version: 2.4
+csp_gateway.apache_user: apache
+csp_gateway.apache_conf_file: {{ hs_ztrak_conf_location }}
+csp_gateway.apache_pid_file:
+csp_gateway.apache_use32bit: N
+csp_gateway.sunone_server:
+csp_gateway.directory: /opt/cspgateway
+csp_gateway.selinuxaware: N
+license_key.enter_key:
+license_key.license_file:
+agent.user_account: iscagent
+agent.user_group: iscagent
+agent.install: N
+client_location.target_dir: {{ ISC_PACKAGE_INSTALLDIR }}
+client_location.is_client_install: N
+samples.install: Y
+japanese_docs.install: N
+docbook.install: Y
+postinstall: upgrade
+install: odbc
+install: samples
+install: dev_kit
+install: ensemble_databases
+install: hsdocumentation
+install: fop
+install: renderserver
+install: printserver
+install: excelexporter
+install: addenda
+install: install_confirmation
+install: copyright
+install: database_server
+postinstall: database_server
+install: mprl
+install: hscore
+install: shutdown_server
+install: install_confirmation

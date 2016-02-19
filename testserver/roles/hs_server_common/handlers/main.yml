@@ -1,0 +1,3 @@
+---
+- name: restart healthshare
+  command: ccontrol stop "{{ ISC_PACKAGE_INSTANCENAME }}" restart quietly  

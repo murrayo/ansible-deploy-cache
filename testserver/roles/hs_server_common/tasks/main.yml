@@ -1,0 +1,20 @@
+---
+
+# include HealthShare defaults
+- include_vars: healthshare2015.yml
+
+# Setup/install tasks.
+
+# Configure OS Basics
+
+- include_vars: os-RedHat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: setup-RedHat.yml
+  when: ansible_os_family == 'RedHat'
+
+
+#### Install and Configure healthshare
+
+- include: configure-healthshare2015.yml
+

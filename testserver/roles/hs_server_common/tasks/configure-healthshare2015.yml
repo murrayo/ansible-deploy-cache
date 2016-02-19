@@ -1,0 +1,125 @@
+---
+
+- debug: msg="Start of HealthShare install"
+
+# Create users and groups
+- name: Create default cache group
+  group: name={{ hs_cache_group }} state=present
+  
+- name: Create default cache manager group
+  group: name={{ hs_cachemgr_group }} state=present
+
+- name: Create default cache user
+  user: name={{ hs_cache_usr }} comment="cacheusr" group={{ hs_cache_group }}
+
+- name: Create default cache system users
+  user: name={{ hs_cache_usr_sys }} comment="cache system usr" group={{ hs_cachemgr_group }}
+
+
+# Copy healthshare Files
+
+- name: Create full hs install temp directory
+  file: path={{ common_install_base_path }}/{{ hs_install_unpack_path }}
+        mode=0777
+        state=directory       
+
+# Check whether file has been untar already
+
+- name: Check tar file (gunzipped already) does not exist
+  stat: path={{ common_install_base_path }}/{{ hs_distribution_file_tar }}
+  register: hs_tar_file
+  
+
+- name: Copy healthshare install file
+  copy: src={{ common_path_to_distribution_files_HealthShare }}/{{ hs_distribution_file }} 
+        dest={{ common_install_base_path }}/{{ hs_distribution_file }}
+  when: not hs_tar_file.stat.exists
+      
+# uncompress and untar
+
+- name: un zip hs folder
+  command: gunzip {{ common_install_base_path }}/{{ hs_distribution_file }}
+  args:
+   chdir: "{{ common_install_base_path }}"
+   creates: "{{ hs_distribution_file_tar }}"
+ 
+      
+- name: un tar hs install
+  command: tar -xvf {{ common_install_base_path }}/{{ hs_distribution_file_tar }}
+  args:
+   chdir: "{{ common_install_base_path }}/{{ hs_install_unpack_path }}"
+   creates: "{{ common_install_base_path }}/{{ hs_install_unpack_path }}/cinstall"
+               
+    
+# ### Alternative   
+#- name: Unarchive healthshare install file
+#  unarchive: 
+#    src={{ common_install_base_path }}/{{ hs_distribution_file }} 
+#    dest={{ common_install_base_path }}/{{ hs_install_unpack_path }} 
+#    copy=yes 
+#    mode=0777
+#    creates="{{ common_install_base_path }}/{{ hs_install_unpack_path }}/cinstall"
+
+
+# Install healthshare
+
+- name: Create hs install directory
+  file: path={{ ISC_PACKAGE_INSTALLDIR }} state=directory
+
+- name: touch ztrak.conf.
+  command: touch "{{ hs_ztrak_conf_location }}"
+  args:
+    creates: "{{ hs_ztrak_conf_location }}" 
+
+# Process install file
+
+- name: Process parameters file
+  template: 
+    src="{{ hs_parameterfile_name_rh64 }}"
+    dest="{{ common_install_base_path }}"
+
+
+# Note the yes is a unix command outputs an affirmative response, or a user-defined string of text continuously until killed
+# Its needed here because 
+
+#- name: Unattended install of hs from parameters file 
+#  shell: yes '' | {{ hs_parameterfile_location_hs2015 }} {{ common_install_base_path }}/{{ hs_parameterfile_name_rh64 }}
+#  when: ansible_os_family == 'RedHat'
+#  args:
+#    creates: "{{ ISC_PACKAGE_INSTALLDIR }}/cinstall.log"  
+  
+  
+- name: unattended install of hs using cinstall_silent
+  shell: >
+    ISC_PACKAGE_INSTANCENAME="{{ ISC_PACKAGE_INSTANCENAME }}" 
+    ISC_PACKAGE_INSTALLDIR="{{ ISC_PACKAGE_INSTALLDIR }}" 
+    ISC_PACKAGE_UNICODE="{{ ISC_PACKAGE_UNICODE }}" 
+    ISC_PACKAGE_INITIAL_SECURITY="{{ ISC_PACKAGE_INITIAL_SECURITY }}" 
+    ISC_PACKAGE_MGRUSER="{{ ISC_PACKAGE_MGRUSER }}" 
+    ISC_PACKAGE_MGRGROUP="{{ ISC_PACKAGE_MGRGROUP }}" 
+    ISC_PACKAGE_USER_PASSWORD="{{ ISC_PACKAGE_USER_PASSWORD }}" 
+    ISC_PACKAGE_CACHEUSER="{{ ISC_PACKAGE_CACHEUSER }}" 
+    ISC_PACKAGE_CACHEGROUP="{{ ISC_PACKAGE_CACHEGROUP }}" ./cinstall_silent
+    chdir="{{ common_install_base_path }}/{{ hs_install_unpack_path }}" 
+  args:
+    creates: "{{ ISC_PACKAGE_INSTALLDIR }}/cinstall.log"   
+  
+# Note healthshare not started until after tasks finished
+    
+- name: copy hs key
+  copy: src="{{ common_path_to_distribution_files_HealthShare }}/cache.key" dest="{{ ISC_PACKAGE_INSTALLDIR }}/mgr"
+  notify: restart healthshare
+  
+   
+- name: Set default hs instance
+  command: "ccontrol default {{ ISC_PACKAGE_INSTANCENAME }}"   
+  
+
+- name: restart apache to initialize CSP.ini file
+  service: 
+    name:  httpd
+    state: restarted
+    
+
+    
+

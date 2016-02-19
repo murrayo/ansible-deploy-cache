@@ -1,0 +1,73 @@
+---
+# HS default install file temp directory on target
+common_install_base_path: /ztemp/hsinstall
+
+# Path to distribution fies on local server
+common_path_to_distribution_files: /ansible_mo/acs_big_files
+common_path_to_distribution_files_HealthShare: "{{ common_path_to_distribution_files }}/HealthShare"
+
+
+
+# HS default groups
+hs_cache_group: cachegrp
+hs_cachemgr_group: cachemgr
+
+# HS default users
+hs_cache_usr: cacheusr
+hs_cache_usr_sys: cachesys
+
+# HS default install temp file upack directory
+hs_install_unpack_path: unpack
+
+# healthshare install files
+hs_distribution_file: HSAP-2015.2.1.705.0-hscore14.01-b7952-lnxrhx64.tar.gz
+hs_distribution_file_tar: HSAP-2015.2.1.705.0-hscore14.01-b7952-lnxrhx64.tar
+
+hs_ztrak_conf_location: /etc/httpd/conf.d/ztrak.conf
+
+#### Destination file paths 
+
+hs_parameterfile_location_hs2015: /ztemp/hsinstall/unpack/package/installFromParametersFile
+hs_parameterfile_name_rh64: parameters_hs20152_rh64.isc
+
+
+ISC_PACKAGE_INSTANCENAME: H2015 
+ISC_PACKAGE_INSTALLDIR: /test/hs2015
+ISC_PACKAGE_UNICODE: Y  
+ISC_PACKAGE_INITIAL_SECURITY: Normal  
+ISC_PACKAGE_MGRUSER: "{{ hs_cache_usr_sys }}" 
+ISC_PACKAGE_MGRGROUP: "{{ hs_cachemgr_group }}"  
+ISC_PACKAGE_USER_PASSWORD: SYS 
+ISC_PACKAGE_CACHEUSER: "{{ hs_cache_usr }}" 
+ISC_PACKAGE_CACHEGROUP: "{{ hs_cache_group }}" 
+
+ISC_PACKAGE_SUPERSERVER_PORT: 1972
+ISC_PACKAGE_WEBSERVER_PORT: 57772
+ISC_PACKAGE_JDBCGATEWAY_PORT: 62972
+
+ISC_PACKAGE_SMP_CSP_PASSWORD: SYS
+
+
+ISC_CSP_GATEWAY_DIR: /opt/cspgateway
+
+
+# Set defaults for cache.cpf file
+
+hs_percent_shared_memory: 75  # Percentage (0-100) of total RAM to dedicate to huge pages
+hs_percent_shared_memory_hs: 80   
+  
+hs_tc_routine_buffers: 512   # Global buffers = shared memory - routine buffers
+  
+hs_locksize: 64000000
+hs_gmheap: 256000
+
+# Global buffers is memory allocated for huge pages - all hs shared memory
+
+# Approx how much memory for hs shared memory - Global and routine buffers gmheap, etc
+# Ballpark - can hard code global buffers etc. 
+
+##  Leave a buffer for other structures and rounding errors.   
+
+hs_shared_memory_available_for_hs: "{{ (((hs_percent_shared_memory/100) * ansible_memtotal_mb) * (hs_percent_shared_memory_hs/100) )|round|int }}"
+
+hs_global_buffers: "{{ ( (((hs_percent_shared_memory/100) * ansible_memtotal_mb) * (hs_percent_shared_memory_hs/100) ) - ( hs_tc_routine_buffers + (hs_locksize/1000/1000) )  )|round|int }}"

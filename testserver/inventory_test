@@ -1,0 +1,33 @@
+# Web servers
+
+web1 ansible_ssh_host=web_server_hostname
+
+# Drivers
+
+gen1 ansible_ssh_host=gen_server_hostname1
+gen2 ansible_ssh_host=gen_server_hostname2
+gen3 ansible_ssh_host=gen_server_hostname3
+
+db2 ansible_ssh_host=192.168.33.52
+
+[webservers]
+web1
+
+[generators]
+gen1
+gen2
+gen3
+
+[dbservers]
+db2
+
+
+[datacenter:children]
+webservers
+generators
+dbservers
+
+[datacenter:vars]
+ansible_ssh_user=vagrant
+ansible_ssh_pass=vagrant
+

@@ -1,0 +1,5 @@
+---
+- hosts: dbservers
+  sudo: yes
+  roles:
+  - hs_server_common  
