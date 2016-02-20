@@ -79,12 +79,11 @@
     dest="{{ common_install_base_path }}"
 
 
-#### UNattended install using parameters file
-# alternative using a parameters file to show how templates files can be used in Ansible 
+#### Example unattended install using parameters file to show how ansible templates files can be used.
 # (see ./roles/hs_server_common/templates/parameters_hs20152_rh64.isc). 
-# A parameters file is useful when you want to install and configure Caché for use CSPGateway with a web server other than the Caché internal apache version. 
-# Note the yes is a unix command outputs an affirmative response, or a user-defined string of text continuously until killed
-# Its needed here because 
+# A parameters file is useful when you want to install and configure Caché and use CSPGateway with a web server other than the Caché internal Apache version. 
+# Note: yes is a unix command outputs an affirmative response, or a user-defined string of text continuously until killed
+# Its shown here because installing with a parameters file requires a user response to go ahead. 
 
 #- name: Unattended install of hs from parameters file 
 #  shell: yes '' | {{ hs_parameterfile_location_hs2015 }} {{ common_install_base_path }}/{{ hs_parameterfile_name_rh64 }}

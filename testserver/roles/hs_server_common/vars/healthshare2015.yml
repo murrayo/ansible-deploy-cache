@@ -19,14 +19,26 @@ hs_cache_usr_sys: cachesys
 # HS default install temp file upack directory
 hs_install_unpack_path: unpack
 
-# healthshare install files
+
+# HealthShare install files. 
+# - - - - - - - - - - - - - - 
+# NOTE: The scripts in this example work with HealthShare AP or Caché
+# HealthShare AP or Caché distribution file must exist in the controller server manifest:
+#    {{ common_path_to_distribution_files_HealthShare }}
+# Change the distribution file to match the the file you will use.
+
 hs_distribution_file: HSAP-2015.2.1.705.0-hscore14.01-b7952-lnxrhx64.tar.gz
 hs_distribution_file_tar: HSAP-2015.2.1.705.0-hscore14.01-b7952-lnxrhx64.tar
+
+# Example - different distribution. Comment previous two variables and uncomment these.
+
+# hs_distribution_file: cache-2015.2.2.805.0-lnxrhx64.tar.gz
+# hs_distribution_file_tar: cache-2015.2.2.805.0-lnxrhx64.tar
+
 
 hs_ztrak_conf_location: /etc/httpd/conf.d/ztrak.conf
 
 #### Destination file paths 
-
 hs_parameterfile_location_hs2015: /ztemp/hsinstall/unpack/package/installFromParametersFile
 hs_parameterfile_name_rh64: parameters_hs20152_rh64.isc
 
