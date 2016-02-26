@@ -1,11 +1,13 @@
 ---
-# HS default install file temp directory on target
+### REVIEW ALL THE FILE PATHS TO ENSURE COMPATABILITY WITH YOUR SYSTEMS
+
+# HS/cache default install file temp directory on target
 common_install_base_path: /ztemp/hsinstall
 
-# Path to distribution fies on local server
-common_path_to_distribution_files: /ansible_mo/acs_big_files
-common_path_to_distribution_files_HealthShare: "{{ common_path_to_distribution_files }}/HealthShare"
-
+# Path to distribution fies on local server 
+# YOU WILL HAVE TO CHANGE THIS FOR YOUR SET UP
+common_path_to_distribution_files: Distribution_Files
+common_path_to_distribution_files_Cache: "{{ common_path_to_distribution_files }}/Cache"
 
 
 # HS default groups
@@ -20,28 +22,28 @@ hs_cache_usr_sys: cachesys
 hs_install_unpack_path: unpack
 
 
-# HealthShare install files. 
+# HealthShare/Cache install files. 
 # - - - - - - - - - - - - - - 
-# NOTE: The scripts in this example work with HealthShare AP or Caché
-# HealthShare AP or Caché distribution file must exist in the controller server manifest:
-#    {{ common_path_to_distribution_files_HealthShare }}
+# NOTE: The scripts in this example work with Caché, HealthShare AP or Ensemble
+# Caché distribution file and cache.key must exist on the controller server in:
+#    {{ common_path_to_distribution_files_Cache }}
 # Change the distribution file to match the the file you will use.
 
-hs_distribution_file: HSAP-2015.2.1.705.0-hscore14.01-b7952-lnxrhx64.tar.gz
-hs_distribution_file_tar: HSAP-2015.2.1.705.0-hscore14.01-b7952-lnxrhx64.tar
+# cache-2015.2.2.805.0-lnxrhx64.tar.gz
+hs_distribution_file: cache-2015.2.2.805.0-lnxrhx64
 
-# Example - different distribution. Comment previous two variables and uncomment these.
+# Other examples:
+# HSAP-2015.2.1.705.0-hscore14.01-b7952-lnxrhx64.tar.gz
+# Different distribution. Comment previous variable and uncomment this one.
+# hs_distribution_file: HSAP-2015.2.1.705.0-hscore14.01-b7952-lnxrhx64
 
-# hs_distribution_file: cache-2015.2.2.805.0-lnxrhx64.tar.gz
-# hs_distribution_file_tar: cache-2015.2.2.805.0-lnxrhx64.tar
 
-
+# Separate apache configuration file for Caché CSP and application configuration
 hs_ztrak_conf_location: /etc/httpd/conf.d/ztrak.conf
 
-#### Destination file paths 
-hs_parameterfile_location_hs2015: /ztemp/hsinstall/unpack/package/installFromParametersFile
+# Destination file paths 
+hs_parameterfile_location_hs2015: "{{ common_install_base_path }}/unpack/package/installFromParametersFile"
 hs_parameterfile_name_rh64: parameters_hs20152_rh64.isc
-
 
 ISC_PACKAGE_INSTANCENAME: H2015 
 ISC_PACKAGE_INSTALLDIR: /test/hs2015
@@ -52,28 +54,23 @@ ISC_PACKAGE_MGRGROUP: "{{ hs_cachemgr_group }}"
 ISC_PACKAGE_USER_PASSWORD: SYS 
 ISC_PACKAGE_CACHEUSER: "{{ hs_cache_usr }}" 
 ISC_PACKAGE_CACHEGROUP: "{{ hs_cache_group }}" 
-
 ISC_PACKAGE_SUPERSERVER_PORT: 1972
 ISC_PACKAGE_WEBSERVER_PORT: 57772
 ISC_PACKAGE_JDBCGATEWAY_PORT: 62972
-
 ISC_PACKAGE_SMP_CSP_PASSWORD: SYS
-
-
 ISC_CSP_GATEWAY_DIR: /opt/cspgateway
 
 
 # Set defaults for cache.cpf file
 
-hs_percent_shared_memory: 75  # Percentage (0-100) of total RAM to dedicate to huge pages
-hs_percent_shared_memory_hs: 80   
+hs_percent_shared_memory: 75  # Percentage (0-100) of total RAM to dedicate to huge pages 
   
-hs_tc_routine_buffers: 512   # Global buffers = shared memory - routine buffers
-  
+# Default values - These will be application specific  - These will be used in Part 2 ofthe blog post
+hs_tc_routine_buffers: 512    
 hs_locksize: 64000000
 hs_gmheap: 256000
 
-# Global buffers is memory allocated for huge pages - all hs shared memory
+# Global buffers is memory allocated for huge pages - all hs/Cache shared memory
 
 # Approx how much memory for hs shared memory - Global and routine buffers gmheap, etc
 # Ballpark - can hard code global buffers etc. 
@@ -81,5 +78,3 @@ hs_gmheap: 256000
 ##  Leave a buffer for other structures and rounding errors.   
 
 hs_shared_memory_available_for_hs: "{{ (((hs_percent_shared_memory/100) * ansible_memtotal_mb) * (hs_percent_shared_memory_hs/100) )|round|int }}"
-
-hs_global_buffers: "{{ ( (((hs_percent_shared_memory/100) * ansible_memtotal_mb) * (hs_percent_shared_memory_hs/100) ) - ( hs_tc_routine_buffers + (hs_locksize/1000/1000) )  )|round|int }}"

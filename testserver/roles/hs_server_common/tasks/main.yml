@@ -1,11 +1,14 @@
 ---
 
-# include HealthShare defaults
+## NOTE: These Examples can be used as a template for HealthShare, Ensemble or Caché deployment
+##       
+
+# include Caché defaults
 - include_vars: healthshare2015.yml
 
 # Setup/install tasks.
 
-# Configure OS Basics
+# Configure OS Basics - Note the "when:" clause 
 
 - include_vars: os-RedHat.yml
   when: ansible_os_family == 'RedHat'

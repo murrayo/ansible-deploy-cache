@@ -8,7 +8,7 @@ gen1 ansible_ssh_host=gen_server_hostname1
 gen2 ansible_ssh_host=gen_server_hostname2
 gen3 ansible_ssh_host=gen_server_hostname3
 
-db2 ansible_ssh_host=192.168.33.52
+db ansible_ssh_host=192.168.33.61
 
 [webservers]
 web1
@@ -19,7 +19,7 @@ gen2
 gen3
 
 [dbservers]
-db2
+db
 
 
 [datacenter:children]
