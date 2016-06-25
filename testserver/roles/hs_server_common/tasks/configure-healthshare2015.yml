@@ -31,7 +31,7 @@
   register: hs_tar_file
   
 
-- name: Copy Caché install file
+- name: Copy Caché/hs install file
   copy: src={{ common_path_to_distribution_files_Cache }}/{{ hs_distribution_file }}.tar.gz 
         dest={{ common_install_base_path }}/{{ hs_distribution_file }}.tar.gz 
   when: not hs_tar_file.stat.exists
